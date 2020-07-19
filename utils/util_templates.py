@@ -54,3 +54,13 @@ def get_smiles(relocate: str) -> str:
     :return: string with smiles
     """
     return SMILES[relocate]
+
+
+@lru_cache()
+def get_nav_item(path: str, location: str) -> str:
+    """
+    :param relocate: str
+
+    :return: string with smiles
+    """
+    return "nav-item active" if location in path else "nav-item"

@@ -34,6 +34,7 @@ def register_filters(app: Flask):
     from utils.util_templates import (
         get_goal,
         get_hour,
+        get_nav_item,
         get_ru_week,
         get_str_time,
         get_smiles,
@@ -46,6 +47,7 @@ def register_filters(app: Flask):
     app.jinja_env.filters["get_goal"] = get_goal
     app.jinja_env.filters["lower_byindex"] = lower_byindex
     app.jinja_env.filters["get_smiles"] = get_smiles
+    app.jinja_env.filters["get_nav_item"] = get_nav_item
 
 
 def create_app() -> Flask:

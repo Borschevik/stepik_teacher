@@ -22,7 +22,7 @@ class IndexService:
         """
          Get random list of tutors
         """
-        return random.choices(self._service.all(), k=6)
+        return random.sample(self._service.all(), k=6)
 
     @staticmethod
     def get_goals() -> dict:
