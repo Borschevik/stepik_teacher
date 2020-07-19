@@ -50,6 +50,7 @@ PyYAML==5.3.1
 regex==2020.6.8
 seed-isort-config==2.1.1
 six==1.15.0
+setuptool==49.2.0
 smmap==3.0.4
 stevedore==2.0.1
 toml==0.10.1
