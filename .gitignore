@@ -100,8 +100,8 @@ celerybeat-schedule
 # Environments
 .env
 .venv
-env/
-venv/
+venv
+venv/sourc
 ENV/
 env.bak/
 venv.bak/
@@ -123,3 +123,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# local
+booking.json
+request.json

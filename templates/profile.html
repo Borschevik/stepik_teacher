@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block main %}
+<main class="container mt-3">
+    <div class="card my-4 mx-auto">
+      <div class="card-body m-2 m-md-4">
+        <article class="row">
+          <div class="col-5"><img src="{{profile.picture}}" class="img-fluid" alt=""></div>
+          <div class="col-7">
+
+            <section class="teacher=info">
+
+              <h1 class="h2">{{profile.name}}</h1>
+
+              <p>{% for goal in profile.goals %}<a href="{{ url_for('.goals', goal=goal) }}" class="badge badge-secondary mr-2">{{goal|get_goal}} </a>{%endfor%}Рейтинг: {{profile.rating}} Ставка: {{profile.price}} / час</p>
+              <p> {{profile.about}}</p>
+
+            </section>
+
+            <section class="available">
+
+              <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
+
+              {% for key, values in profile.time.items()%}
+                <h6 class="mt-4">{{key|get_ru_week}}</h6>
+                {% if values %}
+                {% for available in values %}
+                {% set booking_time = available|get_hour%}
+                <a href="{{ url_for('.booking', id=profile.id, week=key, booking_time=booking_time) }}" class="btn btn-outline-success mr-2">{{available}} свободно</a>
+                {% endfor %}
+                {% else %}
+                <p>Нет свободных уроков</p>
+                {% endif %}
+
+
+              {% endfor %}
+
+            </section>
+
+          </div>
+        </article>
+      </div>
+
+    </div>
+</main>
+{% endblock %}
