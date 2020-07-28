@@ -1,10 +1,10 @@
 """
    Index tutors on the page
 """
-import random
-from typing import Type
+from sqlalchemy.sql.expression import func
 
-from service.json_service import JsonService
+from database.models import Teacher
+from utils.util_models import get_goals
 
 
 class IndexService:
@@ -12,28 +12,27 @@ class IndexService:
        Get tutors for page
     """
 
-    def __init__(self, *, service: Type[JsonService] = JsonService):
-        """
-        Init for index
-        """
-        self._service = service("teachers")
-
-    def get(self) -> list:
+    @staticmethod
+    def get() -> list:
         """
          Get random list of tutors
         """
-        return random.sample(self._service.all(), k=6)
+        return [
+            entry.__dict__
+            for entry in Teacher.query.order_by(func.random()).limit(6).all()
+        ]
 
     @staticmethod
     def get_goals() -> dict:
         """
-        Get goals
         :return: dict with goals
         """
-        return JsonService("goals").all()
 
-    def all(self) -> list:
+        return get_goals()
+
+    @staticmethod
+    def all() -> list:
         """
-        Get random list of tutors
+        Get list of all tutors
         """
-        return self._service.all()
+        return [entry.__dict__ for entry in Teacher.query.all()]

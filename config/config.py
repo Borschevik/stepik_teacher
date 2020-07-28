@@ -1,6 +1,10 @@
+import os
 from pathlib import Path
 
 ROOT_DIR: Path = Path(__file__).parent.parent
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI: str = "postgresql+psycopg2://postgres:admin@127.0.0.1:5432/test"
+MIGRATION_DIR = os.path.join(ROOT_DIR, "database", "migrations")
 
 
 DAY_MAP: dict = {
@@ -32,6 +36,3 @@ TIME_INT: dict = {
     "5-7": "5-7 часа в неделю",
     "7-10": "7-10 часа в неделю",
 }
-
-
-SMILES: dict = {"travel": "⛱", "study": "🏫", "work": "🏢", "relocate": "🚜", "it": "⌨"}

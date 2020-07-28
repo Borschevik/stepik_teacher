@@ -1,8 +1,10 @@
 # pylint: disable=W0621,W0622,W0613
+"""Flask app"""
 from typing import Optional
 
 from flask import Flask, render_template
 
+from config.extenstions import db, migrate
 from forms.booking_form import BookingForm
 from forms.form_request import FormRequest
 from service.booking.form_data import FormData as BookingFormData
@@ -19,9 +21,9 @@ def add_cli_commands(app: Flask):
     :param app:
     """
     # pylint: disable=C0415
-    from cli.commands.cli_create_db import create_db
+    from cli.commands.cli_create_db import db_tasks
 
-    app.cli.add_command(create_db)
+    app.cli.add_command(db_tasks)
 
 
 def register_filters(app: Flask):
@@ -50,16 +52,27 @@ def register_filters(app: Flask):
     app.jinja_env.filters["get_nav_item"] = get_nav_item
 
 
+def register_extensions(app: Flask):
+    """
+    Register extensions for application
+    """
+    db.init_app(app)
+    with app.app_context():
+        migrate.init_app(app, db, directory=app.config["MIGRATION_DIR"])
+
+
 def create_app() -> Flask:
     """
     App facrtory
     """
     app: Flask = Flask(__name__)
+    app.config.from_pyfile("config/config.py")
     app.secret_key = "vcnvsjkrfkao"
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.trim_blocks = True
     add_cli_commands(app)
     register_filters(app)
+    register_extensions(app)
 
     return app
 
@@ -117,8 +130,10 @@ def profiles(id: int):
     :return: rendered page
     """
     profile: Optional[dict] = ProfileService(id).parse_data()
-
-    return render_template("profile.html", profile=profile)
+    if profile:
+        return render_template("profile.html", profile=profile)
+    else:
+        return render_template("404.html")
 
 
 @app.route("/request/")
@@ -141,7 +156,7 @@ def request_done():
     :return: rendered page
     """
     form = FormRequest()
-    data: Optional[dict] = SaveData(form, "request").save()
+    data: Optional[dict] = SaveData(form, "Request").save()
 
     return render_template("request_done.html", data=data)
 
@@ -170,7 +185,7 @@ def booking_done():
     :return: rendered page
     """
     form: BookingForm = BookingForm()
-    save: dict = SaveData(form, "booking").save()
+    save: dict = SaveData(form, "Booking").save()
 
     return render_template("booking_done.html", save=save)
 

@@ -1,7 +1,7 @@
 from functools import lru_cache
 
-from config.config import DAY_MAP, SMILES, TIME_MAP
-from service.json_service import JsonService
+from config.config import DAY_MAP, TIME_MAP
+from database.models import Goal
 
 
 @lru_cache()
@@ -33,7 +33,7 @@ def get_goal(goal_id: str) -> str:
     """
     Get goal full name
     """
-    return JsonService("goals").all()[goal_id]
+    return Goal.query.filter(Goal.eng == goal_id).first().ru
 
 
 @lru_cache()
@@ -53,7 +53,8 @@ def get_smiles(relocate: str) -> str:
 
     :return: string with smiles
     """
-    return SMILES[relocate]
+    # return SMILES[relocate]
+    return Goal.query.filter(Goal.eng == relocate).first().smile
 
 
 @lru_cache()

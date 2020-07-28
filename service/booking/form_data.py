@@ -1,13 +1,17 @@
 """
     For data for booking page
 """
-from typing import Optional, Type
+from typing import Optional
 
-from service.json_service import JsonService
+from database.models import Teacher
 
 
 class FormData:
-    def __init__(self, teacher_id: int, week: str, time: int, * , service: Type[JsonService] = JsonService):
+    """
+       Form data service
+    """
+
+    def __init__(self, teacher_id: int, week: str, time: int):
         """
         Construct data for  booking
 
@@ -19,7 +23,6 @@ class FormData:
         self.week = week
         self.time = time
         self.data: dict = {}
-        self._service = service("teachers")
 
     def form_data(self) -> Optional[dict]:
         """
@@ -30,6 +33,6 @@ class FormData:
         self.data["id"] = self.id
         self.data["week"] = self.week
         self.data["time"] = self.time
-        self.data["name"] = self._service.filter("id", self.id).first()[0].get("name")
+        self.data["name"] = Teacher.query.filter(Teacher.id == self.id).first().name
 
         return self.data

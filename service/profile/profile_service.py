@@ -4,7 +4,7 @@
 from collections import defaultdict
 from typing import Optional
 
-from service.json_service import JsonService
+from database.models import Teacher
 
 
 class ProfileService:
@@ -25,27 +25,29 @@ class ProfileService:
 
         :return: dict with parsed data
         """
-        teacher_data: dict = self._get_teacher()
+        teacher_data: Teacher = self._get_teacher()
+        if teacher_data:
+            self.parsed_data["id"] = teacher_data.id
+            self.parsed_data["name"] = teacher_data.name
+            self.parsed_data["about"] = teacher_data.about
+            self.parsed_data["rating"] = teacher_data.rating
+            self.parsed_data["picture"] = teacher_data.picture
+            self.parsed_data["price"] = teacher_data.price
+            self.parsed_data["goals"] = teacher_data.get_goals()
+            self.parsed_data["time"] = ProfileService.profile_booking_time(
+                teacher_data.free
+            )
 
-        self.parsed_data["id"] = teacher_data["id"]
-        self.parsed_data["name"] = teacher_data["name"]
-        self.parsed_data["about"] = teacher_data["about"]
-        self.parsed_data["rating"] = teacher_data["rating"]
-        self.parsed_data["picture"] = teacher_data["picture"]
-        self.parsed_data["price"] = teacher_data["price"]
-        self.parsed_data["goals"] = teacher_data["goals"]
-        self.parsed_data["time"] = ProfileService.profile_booking_time(
-            teacher_data["free"]
-        )
+            return self.parsed_data
+        else:
+            return None
 
-        return self.parsed_data
-
-    def _get_teacher(self) -> dict:
+    def _get_teacher(self) -> Teacher:
         """
         Get teacher by id
         :return: dict with teahcer
         """
-        return JsonService("teachers").filter("id", self.id).first()[0]
+        return Teacher.query.filter(Teacher.id == self.id).first()
 
     @staticmethod
     def profile_booking_time(booking_data: dict) -> dict:
