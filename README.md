@@ -18,9 +18,9 @@
  Windows
  `pip install -r path-to-service/requirements.txt`
 
- 4. Init initiall JSON database
+ 4. Init initiall DB
 
- `flask create-db`
+ `flask db-tasks init_db`
 
 ## Commiting changes
 Run pre-commit before commiting to repostitory
