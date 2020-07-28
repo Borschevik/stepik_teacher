@@ -8,7 +8,7 @@ import click
 from flask.cli import with_appcontext
 from flask_alembic.cli.click import cli as db_cli
 from flask_migrate import cli
-from sqlalchemy_utils import create_database, database_exists, drop_database
+from sqlalchemy_utils import create_database, drop_database
 
 from config.config import ROOT_DIR, SQLALCHEMY_DATABASE_URI
 from config.extenstions import db
@@ -31,10 +31,7 @@ def db_tasks():
 def init_db(ctx, drop_db: bool):
     """Set the database up from scratch."""
     click.echo("Init.")
-    if not database_exists(SQLALCHEMY_DATABASE_URI):
-        ctx.invoke(create)
-    else:
-        ctx.invoke(drop, ctx=ctx, drop_db=drop_db)
+    ctx.invoke(create, drop_db=drop_db)
     click.echo("Migrate.")
     ctx.invoke(cli.upgrade)
     click.echo("Done")
@@ -43,28 +40,15 @@ def init_db(ctx, drop_db: bool):
 
 
 @db_cli.command()
-@with_appcontext
-def create():
-    """Create the database."""
-    if not database_exists(SQLALCHEMY_DATABASE_URI):
-        click.echo("Creating")
-        create_database(SQLALCHEMY_DATABASE_URI)
-        click.echo("Done")
-    else:
-        click.echo("Already exists.")
-
-
-@db_cli.command()
 @click.option("--drop-db/--no-drop-db", expose_value=True, prompt="Drop DB?")
 @with_appcontext
-def drop(ctx, drop_db: bool):
-    """Drop database."""
+def create(drop_db: bool):
+    """Create the database."""
     if drop_db:
-        if database_exists(SQLALCHEMY_DATABASE_URI):
-            click.echo("Dropping database.")
-            drop_database(SQLALCHEMY_DATABASE_URI)
-            click.echo("Done dropping database.")
-        ctx.invoke(create)
+        click.echo("Dropping database.")
+        drop_database(SQLALCHEMY_DATABASE_URI)
+        click.echo("Done dropping database.")
+    create_database(SQLALCHEMY_DATABASE_URI)
 
 
 @click.command("seed")
@@ -100,5 +84,4 @@ def seed():
 
 db_tasks.add_command(init_db)
 db_tasks.add_command(seed)
-db_tasks.add_command(drop)
 db_tasks.add_command(create)

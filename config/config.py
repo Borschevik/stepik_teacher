@@ -1,10 +1,14 @@
 import os
 from pathlib import Path
+from typing import Optional
 
 ROOT_DIR: Path = Path(__file__).parent.parent
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_DATABASE_URI: str = "postgresql+psycopg2://postgres:admin@127.0.0.1:5432/test"
-MIGRATION_DIR = os.path.join(ROOT_DIR, "database", "migrations")
+
+
+SECRET_KEY: Optional[str] = os.environ.get("SECRET_KEY")
+SQLALCHEMY_DATABASE_URI: Optional[str] = os.environ.get("DATABASE_URL")
+MIGRATION_DIR: str = os.path.join(ROOT_DIR, "database", "migrations")
 
 
 DAY_MAP: dict = {

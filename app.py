@@ -67,7 +67,6 @@ def create_app() -> Flask:
     """
     app: Flask = Flask(__name__)
     app.config.from_pyfile("config/config.py")
-    app.secret_key = "vcnvsjkrfkao"
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.trim_blocks = True
     add_cli_commands(app)
